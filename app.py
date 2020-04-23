@@ -75,15 +75,17 @@ def deploy():
         error_msg = "'repo_path' argument is missing in the HTTP Request. Try to add: ?repo_path={path/to/repo}"
         LOGGER.error("ERROR: {}".format(error_msg))
 
-    elif not os.path.exists(repo_path):
-        error_msg = "repo_path does not exists: '{}'".format(repo_path)
-        LOGGER.error("ERROR: {}".format(error_msg))
+    else:
+        if not os.path.exists(repo_path):
+            error_msg = "repo_path does not exists: '{}'".format(repo_path)
+            LOGGER.error("ERROR: {}".format(error_msg))
 
         if error_msg is None:
+            LOGGER.info("Git Repo path is valid: '{}'".format(repo_path))
             path = os.path.normpath(repo_path)
             # try to pull the repo
             try:
-                LOGGER.info("Updating git repo: '{}'".format(repo_path))
+                LOGGER.info("Updating git repo (git pull): '{}'".format(repo_path))
                 git_cmd_msg = execute_cmd(['git', 'pull', 'origin', 'master'], cwd=repo_path)
             except Exception as ex:
                 error_msg = "{}".format(ex)
