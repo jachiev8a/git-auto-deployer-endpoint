@@ -53,6 +53,8 @@ def configure_logger(global_logger, log_level):
 @app.route('/webhooks/git', methods=['GET', 'POST'])
 def deploy():
 
+    configure_logger(LOGGER, 'info')
+
     http_response = {
         'success': True,
         'git_cmd_msg': 'None',
@@ -132,5 +134,4 @@ def execute_cmd(command, **kwargs):
 
 if __name__ == '__main__':
     # configure logging properties with configuration given
-    configure_logger(LOGGER, 'info')
     app.run(debug=True)
