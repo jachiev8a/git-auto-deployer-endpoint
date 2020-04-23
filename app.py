@@ -50,7 +50,7 @@ def configure_logger(global_logger, log_level):
     global_logger.addHandler(console_handler)
 
 
-@app.route('/webhooks/git', methods=['GET'])
+@app.route('/webhooks/git', methods=['GET', 'POST'])
 def deploy():
 
     http_response = {
