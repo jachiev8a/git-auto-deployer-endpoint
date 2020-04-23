@@ -3,7 +3,7 @@ LOGS_FILE=./sh-git-deploy-default.log
 echo "running as user:"
 whoami
 
-if ![ -z "$1" ]
+if [ -z "$1" ]
 then
   echo "using default log file: $LOGS_FILE"
 else
