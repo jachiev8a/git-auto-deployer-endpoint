@@ -12,5 +12,6 @@ else
 fi
 
 # run flask app
+echo "Running Flask App in background..."
 export FLASK_APP=app
-flask run --host=0.0.0.0 > LOGS_FILE &
+flask run --host=0.0.0.0 > LOGS_FILE 2>&1 &
