@@ -2,13 +2,12 @@
 
 LOGS_FILE=./logs/git-auto-deploy.log
 RUN_IN_BACKGROUND=false
-NEED_HELP=false
 
-echo " > Running app as user: $(whoami)"
 usage() {
-  echo -e "--- run-app.sh ---\n"
-  echo -e "Usage: $0 [ -b ]   (run in background)"
-  echo -e "Usage: $0          (run in current shell as process)\n"
+  echo -e "\n--- run-app.sh ---\n"
+  echo -e "Usage:\n"
+  echo -e "  $0 [ -b ]   (run in background)"
+  echo -e "  $0          (run in current shell)\n"
   exit 0
 }
 
@@ -19,6 +18,8 @@ while getopts "hb" option; do
     h) usage ;;
   esac
 done
+
+echo " > Running app as user: $(whoami)"
 
 # create logs folder (if not exists)
 if [ ! -d "./logs" ]
