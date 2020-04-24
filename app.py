@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 # get logger instance
 LOGGER = logging.getLogger('git-auto-deploy')
-
 LOGGER_CONFIGURED = False
 
 
@@ -57,9 +56,16 @@ def configure_logger(global_logger, log_level):
 
 @app.route('/webhooks/git', methods=['GET', 'POST'])
 def deploy():
+    """Function called from API endpoint to update git repo.
+    It runs 'git pull' command on the repo path given.
 
+    :return:
+    """
+
+    # configure logging properties with configuration given
     configure_logger(LOGGER, 'info')
 
+    # API response model
     http_response = {
         'success': True,
         'git_cmd_msg': 'None',
@@ -81,10 +87,13 @@ def deploy():
     LOGGER.info("repo_path argument: '{}'".format(repo_path))
 
     if repo_path is None:
-        error_msg = "'repo_path' argument is missing in the HTTP Request. Try to add: ?repo_path={path/to/repo}"
+        # not repo path given on request.
+        error_msg = "'repo_path' argument is missing in the HTTP Request. " \
+                    "Try to add: ?repo_path={path/to/repo} to your request"
         LOGGER.error("ERROR: {}".format(error_msg))
 
     else:
+        # repo_path given in request. Validate it.
         if not os.path.exists(repo_path):
             error_msg = "repo_path does not exists: '{}'".format(repo_path)
             LOGGER.error("ERROR: {}".format(error_msg))
@@ -92,24 +101,28 @@ def deploy():
         if error_msg is None:
             LOGGER.info("Git Repo path is valid: '{}'".format(repo_path))
             path = os.path.normpath(repo_path)
-            # try to pull the repo
+
+            # try to pull the latest changes from repo (if any)
             try:
                 LOGGER.info("Updating git repo (git pull): '{}'".format(repo_path))
-                # pull the lastest code (automatic deployment)
-                git_cmd_msg = execute_cmd(['git', 'pull', 'origin', 'master'], cwd=repo_path)
+                # pull the latest code (automatic deployment)
+                git_cmd_msg = execute_cmd(
+                    ['git', 'pull', 'origin', 'master'], cwd=repo_path)
 
-                # get git repo metadata
-                git_commit_id = execute_cmd(['git', 'rev-parse', 'HEAD'], cwd=repo_path)
-                git_commit_msg = execute_cmd(['git', 'log', '--format=%B', '-n', '1', 'HEAD'], cwd=repo_path)
+                # get git repo metadata with commands on the repo
+                git_commit_id = execute_cmd(
+                    ['git', 'rev-parse', 'HEAD'], cwd=repo_path)
+                git_commit_msg = execute_cmd(
+                    ['git', 'log', '--format=%B', '-n', '1', 'HEAD'], cwd=repo_path)
 
             except Exception as ex:
                 error_msg = "{}".format(ex)
                 LOGGER.error("ERROR: {}".format(error_msg))
 
     if error_msg is not None:
-        failure_response(http_response, exit_code, error_msg)
+        set_fail_response(http_response, exit_code, error_msg)
     else:
-        # build 200 response
+        # build OK response with all data available
         http_response['git_cmd_msg'] = git_cmd_msg
         http_response['git_commit_id'] = git_commit_id
         http_response['git_commit_msg'] = git_commit_msg
@@ -117,7 +130,8 @@ def deploy():
         http_response['repo_path'] = repo_path
         http_response['exit_code'] = exit_code
 
-        LOGGER.info("Request is Successful. Sending response back to client. '{}'".format(http_response))
+        LOGGER.info("Request is Successful. "
+                    "Sending response back to client. '{}'".format(http_response))
 
     return jsonify(http_response), exit_code
 
@@ -127,15 +141,31 @@ def main():
     return jsonify({'msg': 'Invalid Path. Contact Administrator.'}), 404
 
 
-def failure_response(http_response, code, msg):
+def set_fail_response(http_response, code, error_msg):
+    # type: (dict, int, str) -> None
+    """
+
+    :param http_response:
+    :param code:
+    :param error_msg:
+    :return:
+    """
+    # set all medata to a Bad Request
     code = 400
     http_response['success'] = False
-    http_response['error'] = msg
+    http_response['error'] = error_msg
     http_response['exit_code'] = code
 
 
 def execute_cmd(command, **kwargs):
     # type: (list, **str) -> str
+    """Executes a command on the OS command line
+    from the host in which this script runs
+
+    :param command:
+    :param kwargs:
+    :return:
+    """
     args = []
     args += command
     cwd = kwargs.pop('cwd', '.')
@@ -155,5 +185,4 @@ def execute_cmd(command, **kwargs):
 
 
 if __name__ == '__main__':
-    # configure logging properties with configuration given
     app.run(debug=True)

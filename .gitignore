@@ -133,3 +133,5 @@ dmypy.json
 output/
 .*jenkins*/
 .*artifacts*/
+
+pid*
