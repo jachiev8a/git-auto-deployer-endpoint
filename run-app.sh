@@ -7,18 +7,11 @@ echo "running app as user:"
 whoami
 
 # validate arguments
-while [ ! $# -eq 0 ]
-do
-	case "$1" in
-		--help | -h)
-			exit
-			;;
-		--background | -b)
-			RUN_IN_BACKGROUND=true
-			exit
-			;;
-	esac
-	shift
+while getopts "h:b" option; do
+  case "$option" in
+    b) RUN_IN_BACKGROUND=true ;;
+    h) echo "Usage: ./run-app.sh [-b] (to run in background)" ;;
+  esac
 done
 
 # run flask app
