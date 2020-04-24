@@ -31,6 +31,7 @@ while getopts "hb" option; do
         *) usage ;;
     esac
 done
+echo "" # new line
 
 # validate if Flask app is not already running in the OS
 PS_PARSED_PID=$(pgrep -l flask | awk '{print $1}')
@@ -40,7 +41,6 @@ if [ -n "$PS_PARSED_PID" ]; then
     exit 0
 fi
 
-echo ""
 echo " > Running app as user: $(whoami)"
 
 # create logs folder (if not exists)
