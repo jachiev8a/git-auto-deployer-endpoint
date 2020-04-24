@@ -28,5 +28,5 @@ if [ "$RUN_IN_BACKGROUND" = true ] ; then
     flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1 &
 else
     echo 'Running Flask App...'
-    flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1
+    flask run --host=0.0.0.0
 fi
