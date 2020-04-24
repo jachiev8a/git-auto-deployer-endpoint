@@ -16,5 +16,5 @@ RUN pip install -r requirements.txt
 
 VOLUME . /app/outside/
 
-CMD [ "cd /app/outside/" ]
+CMD [ "cd", "/app/outside/" ]
 CMD [ "docker-start-app.sh" ]
