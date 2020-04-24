@@ -39,7 +39,7 @@ def configure_logger(global_logger, log_level):
             log_level = log_levels[log_level]
         global_logger.setLevel(logging.DEBUG)
         # create file handler which logs even debug messages
-        file_handler = logging.FileHandler('git-auto-deployer.log')
+        file_handler = logging.FileHandler('python__git-auto-deployer.log')
         file_handler.setLevel(log_level)
         # create console handler with a higher log level
         console_handler = logging.StreamHandler()
