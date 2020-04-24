@@ -48,5 +48,5 @@ if [ "$CURRENT_APP_PID" == "$PS_PARSED_PID" ]; then
     echo " > OS PID and file PID are the same... [OK]"
     echo " > killing process with PID: $PS_PARSED_PID"
     kill -9 "$PS_PARSED_PID"
-    echo " > Flask Process Killed... [OK]"
+    echo " > Flask Process Killed... [OK]\n"
 fi
