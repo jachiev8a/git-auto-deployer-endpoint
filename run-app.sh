@@ -26,6 +26,7 @@ while getopts "hb" option; do
     case "$option" in
         b) RUN_IN_BACKGROUND=true ;;
         h) usage ;;
+        *) usage ;;
     esac
 done
 
@@ -50,13 +51,13 @@ fi
 # run flask app
 export FLASK_APP=app
 if [ "$RUN_IN_BACKGROUND" = true ] ; then
-    echo " > Running Flask App in Background..."
+    echo -e " > Running Flask App in Background..."
     flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1 &
     # get PID from current flask app
     PID="$!"
-    echo " > Flask App PID: $PID"
-    echo "$PID" > "pid-flask-app"
+    echo -e " > Flask App PID: $PID\n"
+    echo -e "$PID" > "pid-flask-app"
 else
-    echo " > Running Flask App...\n"
+    echo -e " > Running Flask App...\n"
     flask run --host=0.0.0.0
 fi
