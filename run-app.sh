@@ -29,6 +29,7 @@ while getopts "hb" option; do
     esac
 done
 
+echo ""
 echo " > Running app as user: $(whoami)"
 
 # create logs folder (if not exists)
@@ -56,6 +57,6 @@ if [ "$RUN_IN_BACKGROUND" = true ] ; then
     echo " > Flask App PID: $PID"
     echo "$PID" > "pid-flask-app"
 else
-    echo " > Running Flask App..."
+    echo " > Running Flask App...\n"
     flask run --host=0.0.0.0
 fi
