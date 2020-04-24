@@ -27,6 +27,9 @@ if [ -z "$PS_PARSED_PID" ]; then
     echo -e " > There is no Flask process currently running in the OS..."
     echo -e " > Nothing to do!\n"
     exit 0
+else
+    echo -e " > OS Flask process PID: '$PS_PARSED_PID'"
+    echo -e " > [OK]"
 fi
 
 # validate PID file exists
@@ -37,10 +40,13 @@ if [ ! -f "$PID_FILE" ]; then
 else
     CURRENT_APP_PID=$(cat "$PID_FILE")
     echo " > Current Flask App PID: '$CURRENT_APP_PID'"
+    echo " > [OK]"
 fi
 
 # validate both PID
 if [ "$CURRENT_APP_PID" == "$PS_PARSED_PID" ]; then
     echo " > OS PID and file PID are the same... [OK]"
     echo " > killing process with PID: $PS_PARSED_PID"
+    kill -9 "$PS_PARSED_PID"
+    echo " > Flask Process Killed... [OK]"
 fi
