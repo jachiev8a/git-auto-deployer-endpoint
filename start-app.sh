@@ -3,6 +3,8 @@
 LOGS_FILE=./logs/git-auto-deploy.log
 RUN_IN_BACKGROUND=false
 
+PID_FILE="./pid-flask-app"
+
 usage() {
     echo -e "\n--- run-app.sh ---\n"
     echo -e "Usage:\n"
@@ -30,6 +32,14 @@ while getopts "hb" option; do
     esac
 done
 
+# validate if Flask app is not already running in the OS
+PS_PARSED_PID=$(pgrep -l flask | awk '{print $1}')
+if [ -n "$PS_PARSED_PID" ]; then
+    echo -e " > There is a Flask process currently running in the OS..."
+    echo -e " > OS Flask process PID: '$PS_PARSED_PID'\n"
+    exit 0
+fi
+
 echo ""
 echo " > Running app as user: $(whoami)"
 
@@ -56,7 +66,7 @@ if [ "$RUN_IN_BACKGROUND" = true ] ; then
     # get PID from current flask app
     PID="$!"
     echo -e " > Flask App PID: $PID\n"
-    echo -e "$PID" > "pid-flask-app"
+    echo -e "$PID" > "$PID_FILE"
 else
     echo -e " > Running Flask App...\n"
     flask run --host=0.0.0.0
