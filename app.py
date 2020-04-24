@@ -11,6 +11,8 @@ app = Flask(__name__)
 # get logger instance
 LOGGER = logging.getLogger('git-auto-deploy')
 
+LOGGER_CONFIGURED = False
+
 
 def configure_logger(global_logger, log_level):
     # type: (logging.Logger, str) -> None
@@ -22,36 +24,41 @@ def configure_logger(global_logger, log_level):
         logging level [ error > warning > info > debug > off ]
     :return:
     """
-    log_levels = {
-        'off': logging.NOTSET,
-        'debug': logging.DEBUG,
-        'info': logging.INFO,
-        'warning': logging.WARNING,
-        'error': logging.ERROR,
-        'critical': logging.CRITICAL
-    }
-    if log_level not in log_levels.keys():
-        raise ValueError("Logging level not valid: '{}'".format(log_level))
-    else:
-        log_level = log_levels[log_level]
-    global_logger.setLevel(logging.DEBUG)
-    # create file handler which logs even debug messages
-    file_handler = logging.FileHandler('git-auto-deployer.log')
-    file_handler.setLevel(log_level)
-    # create console handler with a higher log level
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(log_level)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s :%(name)-16s: [%(levelname)s] -> %(message)s')
-    file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
-    # add the handlers to the logger
-    global_logger.addHandler(file_handler)
-    global_logger.addHandler(console_handler)
+    global LOGGER_CONFIGURED
+    if not LOGGER_CONFIGURED:
+        log_levels = {
+            'off': logging.NOTSET,
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warning': logging.WARNING,
+            'error': logging.ERROR,
+            'critical': logging.CRITICAL
+        }
+        if log_level not in log_levels.keys():
+            raise ValueError("Logging level not valid: '{}'".format(log_level))
+        else:
+            log_level = log_levels[log_level]
+        global_logger.setLevel(logging.DEBUG)
+        # create file handler which logs even debug messages
+        file_handler = logging.FileHandler('git-auto-deployer.log')
+        file_handler.setLevel(log_level)
+        # create console handler with a higher log level
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(log_level)
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)s :%(name)-16s: [%(levelname)s] -> %(message)s')
+        file_handler.setFormatter(formatter)
+        console_handler.setFormatter(formatter)
+        # add the handlers to the logger
+        global_logger.addHandler(file_handler)
+        global_logger.addHandler(console_handler)
+        LOGGER_CONFIGURED = True
 
 
 @app.route('/webhooks/git', methods=['GET', 'POST'])
 def deploy():
+
+    configure_logger(LOGGER, 'info')
 
     http_response = {
         'success': True,
@@ -134,5 +141,4 @@ def execute_cmd(command, **kwargs):
 
 if __name__ == '__main__':
     # configure logging properties with configuration given
-    configure_logger(LOGGER, 'info')
     app.run(debug=True)

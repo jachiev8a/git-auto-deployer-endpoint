@@ -1,18 +1,32 @@
+#!/bin/bash
 
-LOGS_FILE=./sh-git-deploy-default.log
+LOGS_FILE=./shell-git-deploy-default.log
+RUN_IN_BACKGROUND=false
+
 echo "running app as user:"
 whoami
 
-echo "Validating Log File..."
-if [ -z "$1" ]
-then
-  echo "using default log file: $LOGS_FILE"
-else
-  echo "first arg (Log file): $1"
-  LOGS_FILE=$1
-fi
+# validate arguments
+while [ ! $# -eq 0 ]
+do
+	case "$1" in
+		--help | -h)
+			exit
+			;;
+		--background | -b)
+			RUN_IN_BACKGROUND=true
+			exit
+			;;
+	esac
+	shift
+done
 
 # run flask app
-echo "Running Flask App in background..."
 export FLASK_APP=app
-flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1 &
+if [ "$RUN_IN_BACKGROUND" = true ] ; then
+    echo "Running Flask App in Background..."
+    flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1 &
+else
+    echo 'Running Flask App...'
+    flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1
+fi
