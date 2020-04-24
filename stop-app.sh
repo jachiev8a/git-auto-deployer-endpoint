@@ -24,8 +24,8 @@ echo " > Retrieving current Flask process PID from OS..."
 PS_PARSED_PID=$(pgrep -l flask | awk '{print $1}')
 
 if [ -z "$PS_PARSED_PID" ]; then
-    echo " > There is no Flask process currently running in the OS..."
-    echo " > Nothing to do!\n"
+    echo -e " > There is no Flask process currently running in the OS..."
+    echo -e " > Nothing to do!\n"
     exit 0
 fi
 
