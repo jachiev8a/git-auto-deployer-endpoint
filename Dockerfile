@@ -2,7 +2,8 @@ FROM ubuntu:16.04
 
 MAINTAINER Your Name "javier.ochoa@osram-continental.com"
 
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get update -y
+RUN apt-get install -y \
         python3.6 \
         python3-pip \
         curl \
