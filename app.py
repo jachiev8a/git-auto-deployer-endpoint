@@ -63,6 +63,8 @@ def deploy():
     http_response = {
         'success': True,
         'git_cmd_msg': 'None',
+        'git_commit_id': 'None',
+        'git_commit_msg': 'None',
         'error': 'None',
         'exit_code': 200,
         'repo_path': "None"
@@ -71,6 +73,8 @@ def deploy():
     error_msg = None
     exit_code = 200
     git_cmd_msg = ""
+    git_commit_id = ""
+    git_commit_msg = ""
 
     # get git repo path from request arguments
     repo_path = request.args.get('repo_path')
@@ -91,7 +95,13 @@ def deploy():
             # try to pull the repo
             try:
                 LOGGER.info("Updating git repo (git pull): '{}'".format(repo_path))
+                # pull the lastest code (automatic deployment)
                 git_cmd_msg = execute_cmd(['git', 'pull', 'origin', 'master'], cwd=repo_path)
+
+                # get git repo metadata
+                git_commit_id = execute_cmd(['git', 'rev-parse', 'HEAD'], cwd=repo_path)
+                git_commit_msg = execute_cmd(['git', 'log', '--format=%B', '-n', '1', 'HEAD'], cwd=repo_path)
+
             except Exception as ex:
                 error_msg = "{}".format(ex)
                 LOGGER.error("ERROR: {}".format(error_msg))
@@ -99,9 +109,14 @@ def deploy():
     if error_msg is not None:
         failure_response(http_response, exit_code, error_msg)
     else:
+        # build 200 response
         http_response['git_cmd_msg'] = git_cmd_msg
+        http_response['git_commit_id'] = git_commit_id
+        http_response['git_commit_msg'] = git_commit_msg
+
         http_response['repo_path'] = repo_path
         http_response['exit_code'] = exit_code
+
         LOGGER.info("Request is Successful. Sending response back to client. '{}'".format(http_response))
 
     return jsonify(http_response), exit_code
