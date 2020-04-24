@@ -22,8 +22,8 @@ done
 echo " > Running app as user: $(whoami)"
 
 # create logs folder (if not exists)
-if [ ! -d "./logs" ]
-  mkdir logs
+if [ ! -d "./logs" ] ; then
+    mkdir logs
 fi
 
 # run flask app
