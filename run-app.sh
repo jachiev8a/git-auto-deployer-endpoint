@@ -4,26 +4,46 @@ LOGS_FILE=./logs/git-auto-deploy.log
 RUN_IN_BACKGROUND=false
 
 usage() {
-  echo -e "\n--- run-app.sh ---\n"
-  echo -e "Usage:\n"
-  echo -e "  $0 [ -b ]   (run in background)"
-  echo -e "  $0          (run in current shell)\n"
-  exit 0
+    echo -e "\n--- run-app.sh ---\n"
+    echo -e "Usage:\n"
+    echo -e "  $0 [ -b ]   (run in background)"
+    echo -e "  $0          (run in current shell)\n"
+    exit 0
+}
+
+activate_venv() {
+    if [ -f ./venv/bin/activate ]; then
+        echo " > Activate venv..."
+        source ./venv/bin/activate
+    else
+        echo " > ERROR: venv does not exists! Exiting..."
+        exit 1
+    fi
 }
 
 # validate arguments
 while getopts "hb" option; do
-  case "$option" in
-    b) RUN_IN_BACKGROUND=true ;;
-    h) usage ;;
-  esac
+    case "$option" in
+        b) RUN_IN_BACKGROUND=true ;;
+        h) usage ;;
+    esac
 done
 
 echo " > Running app as user: $(whoami)"
 
 # create logs folder (if not exists)
 if [ ! -d "./logs" ] ; then
+    echo " > Creating logs folder..."
     mkdir logs
+fi
+
+# validate python venv environment
+echo " > Validating Python Virtualenv..."
+if [[ "$VIRTUAL_ENV" != "" ]]
+then
+    echo " > Virtualenv is Active. Nothing to do!"
+else
+    activate_venv
 fi
 
 # run flask app
