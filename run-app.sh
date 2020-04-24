@@ -1,28 +1,28 @@
 #!/bin/bash
 
-LOGS_FILE=./git-auto-deploy.log
+LOGS_FILE=./logs/git-auto-deploy.log
 RUN_IN_BACKGROUND=false
 NEED_HELP=false
 
-echo " > Running app as user:"
-whoami
+echo " > Running app as user: $(whoami)"
+usage() {
+  echo -e "--- run-app.sh ---\n"
+  echo -e "Usage: $0 [ -b ]   (run in background)"
+  echo -e "Usage: $0          (run in current shell as process)\n"
+  exit 0
+}
 
 # validate arguments
-while getopts "h:b" option; do
+while getopts "hb" option; do
   case "$option" in
     b) RUN_IN_BACKGROUND=true ;;
-    h) NEED_HELP=true ;;
+    h) usage ;;
   esac
 done
 
-# validate HELP Arg
-if [ "$NEED_HELP" = true ] ; then
-  echo "--- run-app.sh - HELP ---\n"
-  echo "Usage:"
-  echo "  ./run-app.sh    [-b] (run in background)"
-  echo "  ./run-app.sh         (run in current shell as process)"
-  echo ""
-  exit 0
+# create logs folder (if not exists)
+if [ ! -d "./logs" ]
+  mkdir logs
 fi
 
 # run flask app
