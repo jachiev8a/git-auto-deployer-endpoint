@@ -1,17 +1,6 @@
-FROM ubuntu:16.04
+FROM python:3.6
 
 MAINTAINER Your Name "javier.ochoa@osram-continental.com"
-
-RUN apt-get update -y
-
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:jonathonf/python-3.6
-
-RUN apt-get install -y \
-        python3.6 \
-        python3-pip \
-        curl \
-        git
 
 # We copy just the requirements.txt first to leverage Docker cache
 COPY ./requirements.txt /app/requirements.txt
