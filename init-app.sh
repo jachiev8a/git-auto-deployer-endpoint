@@ -11,7 +11,7 @@ fi
 # run flask app
 export FLASK_APP=app
 echo -e " > [DOCKER]: Running Flask App in Background..."
-flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1 &
+flask run --host=0.0.0.0 >> "$LOGS_FILE" 2>&1 &
 # get PID from current flask app
 PID="$!"
 echo -e " > [DOCKER]: Flask App PID: $PID\n"
