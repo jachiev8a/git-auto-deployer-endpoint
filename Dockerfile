@@ -8,6 +8,9 @@ COPY ["./requirements.txt", "/app/requirements.txt"]
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
 
+# required token to pull requests
+COPY ["./gitlab-token", "/app/gitlab-token"]
+
 COPY [".", "/app/"]
 RUN mkdir /app/logs
 
