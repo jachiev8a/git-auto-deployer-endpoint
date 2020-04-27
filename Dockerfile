@@ -12,13 +12,8 @@ RUN pip3 install --upgrade pip && \
 COPY ["./gitlab-token", "/app/gitlab-token"]
 
 COPY [".", "/app/"]
-RUN mkdir /app/logs
 
 EXPOSE 5000
-
-# flask environment variables
-ENV FLASK_APP "app.py"
-ENV FLASK_ENV "development"
 
 # run server seen outside
 CMD ["flask", "run", "--host=0.0.0.0"]
