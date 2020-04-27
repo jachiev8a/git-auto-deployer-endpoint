@@ -8,10 +8,11 @@ COPY ["./requirements.txt", "/app/requirements.txt"]
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
 
-# required token to pull requests
-COPY ["./gitlab-token", "/app/gitlab-token"]
-
 COPY [".", "/app/"]
+
+# add ssh credentials to pull repo in git
+ADD id_rsa /root/.ssh/id_rsa
+RUN chmod 700 /root/.ssh/id_rsa
 
 EXPOSE 5000
 
