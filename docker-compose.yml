@@ -4,6 +4,7 @@ services:
     git-deployer-app:
         # use Dockerfile in this context repo
         build: .
+        restart: always
         environment:
             FLASK_APP: "app.py"
             FLASK_ENV: "development"
