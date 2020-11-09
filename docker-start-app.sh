@@ -66,3 +66,4 @@ fi
 
 # set the repo path variable use at docker-compose file.
 export REPO_TO_DEPLOY="$REPO_PATH_TO_DEPLOY"
+
