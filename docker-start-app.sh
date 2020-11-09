@@ -1,54 +1,68 @@
 #!/bin/bash
 
-LOGS_FILE=./logs/git-auto-deploy.log
-RUN_IN_BACKGROUND=false
+# ----------------------------------------------------------------------
+# Script definitions
+# ----------------------------------------------------------------------
 
-PID_FILE="./pid-flask-app"
+# default one used as repo path to deploy
+DEFAULT_REPO_PATH=/opt/jira/git-jira
+USE_DEFAULT_REPO_PATH=false
+REPO_PATH_TO_DEPLOY=null
 
+# usage help use
+# ----------------------------------------------------------------------
 usage() {
-    echo -e "\n--- [DOCKER]: run-app.sh ---\n"
+    echo -e "\n--- [DOCKER]: docker-start-app.sh ---\n"
     echo -e "Usage:\n"
-    echo -e "  $0 [ -b ]   (run in background)"
-    echo -e "  $0          (run in current shell)\n"
+    echo -e "  $0 [ -d ]   (use default repo path: $DEFAULT_REPO_PATH)"
+    echo -e "  $0          (run normal. Type the repo path to be used.)\n"
     exit 0
 }
 
-# validate arguments
-while getopts "hb" option; do
+# script error handler
+# ----------------------------------------------------------------------
+handle_error() {
+    error_msg=$1
+    echo -e "\n > [DOCKER]: ERROR: $error_msg"
+    echo -e "\nExiting..."
+    exit 1
+}
+
+# validate arguments parsing
+# ----------------------------------------------------------------------
+while getopts "hd" option; do
     case "$option" in
-        b) RUN_IN_BACKGROUND=true ;;
+        d) USE_DEFAULT_REPO_PATH=true ;;
         h) usage ;;
         *) usage ;;
     esac
 done
 echo "" # new line
 
-# validate if Flask app is not already running in the OS
-PS_PARSED_PID=$(pgrep -l flask | awk '{print $1}')
-if [ -n "$PS_PARSED_PID" ]; then
-    echo -e " > [DOCKER]: There is a Flask process currently running in the OS..."
-    echo -e " > [DOCKER]: OS Flask process PID: '$PS_PARSED_PID'\n"
-    exit 0
-fi
-
 echo " > [DOCKER]: Running app as user: $(whoami)"
 
 # create logs folder (if not exists)
+# ----------------------------------------------------------------------
 if [ ! -d "./logs" ] ; then
     echo " > [DOCKER]: Creating logs folder..."
     mkdir logs
 fi
 
-# run flask app
-export FLASK_APP=app
-if [ "$RUN_IN_BACKGROUND" = true ] ; then
-    echo -e " > [DOCKER]: Running Flask App in Background..."
-    flask run --host=0.0.0.0 > "$LOGS_FILE" 2>&1 &
-    # get PID from current flask app
-    PID="$!"
-    echo -e " > [DOCKER]: Flask App PID: $PID\n"
-    echo -e "$PID" > "$PID_FILE"
+# Validate repo path argument
+# ----------------------------------------------------------------------
+if [ "$USE_DEFAULT_REPO_PATH" = true ] ; then
+    echo -e " > [DOCKER]: Using Default repo path: '$DEFAULT_REPO_PATH'"
+    REPO_PATH_TO_DEPLOY=$DEFAULT_REPO_PATH
 else
-    echo -e " > [DOCKER]: Running Flask App...\n"
-    flask run --host=0.0.0.0
+    echo -e " > [DOCKER]: Setting up Repo Path:\n"
+    read -p "Enter the Repo Path Value: " input_repo_path
+
+    # validate that repo path exists
+    if [ ! -d "$input_repo_path" ] ; then
+        handle_error "Given Repo Path does not exists! : $input_repo_path"
+    fi
+    REPO_PATH_TO_DEPLOY="$input_repo_path"
 fi
+
+# set the repo path variable use at docker-compose file.
+export REPO_TO_DEPLOY="$REPO_PATH_TO_DEPLOY"

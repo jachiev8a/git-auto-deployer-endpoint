@@ -13,3 +13,4 @@ services:
         volumes:
             #- /home/ocu02017/git/jira-groovy-scripts:/app/sync-repo
             - ${REPO_TO_DEPLOY}:/volume/repo
+            - ./logs:/app/logs

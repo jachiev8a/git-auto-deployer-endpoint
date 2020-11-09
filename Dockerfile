@@ -11,10 +11,12 @@ RUN pip3 install --upgrade pip && \
 COPY [".", "/app/"]
 
 # add ssh credentials to pull repo in git
+# ----------------------------------------------------------------------
 ADD id_rsa /root/.ssh/id_rsa
 RUN chmod 700 /root/.ssh/id_rsa
 
 EXPOSE 5000
 
-# run server seen outside
+# run server to be seen from outside
+# ----------------------------------------------------------------------
 CMD ["flask", "run", "--host=0.0.0.0"]
