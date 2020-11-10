@@ -24,7 +24,7 @@ usage() {
 handle_error() {
     error_msg=$1
     echo -e "\n > [DOCKER]: ERROR: $error_msg"
-    echo -e "\nExiting..."
+    echo -e "\n > Exiting...\n"
     exit 1
 }
 
@@ -39,7 +39,7 @@ while getopts "hd" option; do
 done
 echo "" # new line
 
-echo " > [DOCKER]: Running app as user: $(whoami)"
+echo " > [DOCKER]: Running Docker App as user: $(whoami)"
 
 # create logs folder (if not exists)
 # ----------------------------------------------------------------------
@@ -55,11 +55,14 @@ if [ "$USE_DEFAULT_REPO_PATH" = true ] ; then
     REPO_PATH_TO_DEPLOY=$DEFAULT_REPO_PATH
 else
     echo -e " > [DOCKER]: Setting up Repo Path:\n"
-    read -p "Enter the Repo Path Value: " input_repo_path
+    read -p " > Enter the Repo Path Value: " input_repo_path
 
     # validate that repo path exists
     if [ ! -d "$input_repo_path" ] ; then
-        handle_error "Given Repo Path does not exists! : $input_repo_path"
+        handle_error "Given Repo Path does not exists! -> '$input_repo_path'"
+    else
+        echo -e " > [DOCKER]: Valid Repo Path -> '$input_repo_path'"
+        echo -e " > [DOCKER]: [OK]"
     fi
     REPO_PATH_TO_DEPLOY="$input_repo_path"
 fi
