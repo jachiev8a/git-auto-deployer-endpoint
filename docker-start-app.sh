@@ -39,7 +39,7 @@ while getopts "hd" option; do
 done
 echo "" # new line
 
-echo " > [DOCKER]: Running Docker App as user: $(whoami)"
+echo " > [DOCKER]: Running Docker App as user: '$(whoami)'"
 
 # create logs folder (if not exists)
 # ----------------------------------------------------------------------
@@ -71,3 +71,7 @@ fi
 # set the repo path variable use at docker-compose file.
 export REPO_TO_DEPLOY="$REPO_PATH_TO_DEPLOY"
 
+echo -e " > [DOCKER]: Executing docker-compose..."
+docker-compose -f docker-compose.yml up -d
+
+echo -e " > [DOCKER]: Docker App Executed [OK]"
