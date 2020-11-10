@@ -25,7 +25,8 @@ handle_error() {
     error_msg=$1
     echo -e ""
     echo -e "=========================================================="
-    echo -e " > [DOCKER]: ERROR: $error_msg"
+    echo -e " > [DOCKER]: ERROR:"
+    echo -e " > $error_msg"
     echo -e "=========================================================="
     echo -e "\n > Exiting...\n"
     exit 1
