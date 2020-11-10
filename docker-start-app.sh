@@ -126,6 +126,7 @@ export REPO_TO_DEPLOY="$REPO_PATH_TO_DEPLOY"
 
 echo -e " > [DOCKER]: Executing docker-compose..."
 
+docker-compose -f docker-compose.yml down
 docker-compose -f docker-compose.yml up --build -d
 docker_exit_status=$?
 
