@@ -75,7 +75,7 @@ else
     else
         echo -e ""
         echo -e " > [DOCKER]: Valid Repo Path Value -> '$input_repo_path'"
-        echo -e " > [DOCKER]: [OK]\n"
+        echo -e "\e[92m > [DOCKER]: [OK]\033[0m\n"
     fi
     REPO_PATH_TO_DEPLOY="$input_repo_path"
 fi
@@ -95,7 +95,7 @@ else
     else
         echo -e ""
         echo -e " > [DOCKER]: Valid SSH id_rsa Value -> '$input_ssh_path'"
-        echo -e " > [DOCKER]: [OK]\n"
+        echo -e "\e[92m > [DOCKER]: [OK]\033[0m\n"
     fi
     GIT_SSH_FILE="$input_ssh_path"
 fi
@@ -122,7 +122,7 @@ if [ ! -f "$this_root_ssh_file" ] ; then
     echo -e " > [DOCKER]: Successfully Copied [OK]"
 else
     echo -e " > [DOCKER]: SSH $DEFAULT_SSH_FILE_ID already located in root."
-    echo -e " > [DOCKER]: Nothing to do! [OK]\n"
+    echo -e "\e[92m > [DOCKER]: Nothing to do! [OK]\033[0m\n"
 fi
 echo -e " ------------------------------------------------------------"
 
@@ -133,7 +133,7 @@ echo -e " > [DOCKER]: Executing docker-compose Process...\n"
 
 echo -e " > [DOCKER]: Stop all running containers..."
 docker-compose -f docker-compose.yml down
-echo -e " > [DOCKER]: Containers Stopped [OK]\n"
+echo -e "\e[92m > [DOCKER]: Containers Stopped [OK]\033[0m\n"
 echo -e " ------------------------------------------------------------"
 
 echo -e " > [DOCKER]: Starting containers..."
@@ -145,9 +145,9 @@ if [ $docker_exit_status -ne 0 ]; then
 fi
 
 echo -e "\n"
-echo -e "==================================================================="
-echo -e " > [DOCKER]: Docker App Executed! [OK]"
+echo -e "\e[92m===================================================================\033[0m"
+echo -e "\e[92m > [DOCKER]: Docker App Executed! [OK]\033[0m"
 echo -e ""
-echo -e " > [Executed in Background...]"
-echo -e "==================================================================="
+echo -e "\e[92m > [Executed in Background...]\033[0m"
+echo -e "\e[92m===================================================================\033[0m"
 echo -e "\n"
