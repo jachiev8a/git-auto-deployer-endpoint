@@ -134,4 +134,8 @@ if [ $docker_exit_status -ne 0 ]; then
     handle_error "docker-compose command failed! Check the logs..."
 fi
 
+echo -e "\n"
+echo -e "==================================================================="
 echo -e " > [DOCKER]: Docker App Executed [OK]"
+echo -e "==================================================================="
+echo -e "\n"
