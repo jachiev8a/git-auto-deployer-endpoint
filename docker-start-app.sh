@@ -31,11 +31,11 @@ usage() {
 handle_error() {
     error_msg=$1
     echo -e ""
-    echo -e "\e[91m==================================================================="
-    echo -e "\e[91m > [DOCKER]: ERROR:"
-    echo -e "\e[91m > $error_msg"
-    echo -e "\e[91m==================================================================="
-    echo -e "\n\e[93m > Exiting...\n"
+    echo -e "\e[91m===================================================================\033[0m"
+    echo -e "\e[91m > [DOCKER]: ERROR:\033[0m"
+    echo -e "\e[91m > $error_msg\033[0m"
+    echo -e "\e[91m===================================================================\033[0m"
+    echo -e "\n\e[93m > Exiting...\n\033[0m"
     exit 1
 }
 
@@ -124,7 +124,7 @@ else
     echo -e " > [DOCKER]: SSH $DEFAULT_SSH_FILE_ID already located in root."
     echo -e " > [DOCKER]: Nothing to do! [OK]\n"
 fi
-echo -e " ............................................................"
+echo -e " ------------------------------------------------------------"
 
 # set the repo path variable use at docker-compose file.
 export REPO_TO_DEPLOY="$REPO_PATH_TO_DEPLOY"
@@ -134,7 +134,7 @@ echo -e " > [DOCKER]: Executing docker-compose Process...\n"
 echo -e " > [DOCKER]: Stop all running containers..."
 docker-compose -f docker-compose.yml down
 echo -e " > [DOCKER]: Containers Stopped [OK]\n"
-echo -e " ............................................................"
+echo -e " ------------------------------------------------------------"
 
 echo -e " > [DOCKER]: Starting containers..."
 docker-compose -f docker-compose.yml up --build -d
