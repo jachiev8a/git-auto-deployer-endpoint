@@ -45,9 +45,9 @@ handle_error() {
 
 # run script as root
 # ----------------------------------------------------------------------
-if [ "$EUID" -ne 0 ]
-  handle_error "Please run this script as 'root'"
-  exit
+if [ "$EUID" -ne 0 ] ; then
+    handle_error "Please run this script as 'root'"
+    exit 1
 fi
 
 # validate arguments parsing
