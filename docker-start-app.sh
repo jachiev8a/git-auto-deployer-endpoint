@@ -39,7 +39,7 @@ handle_error() {
     log_error " > [DOCKER]: ERROR:"
     log_error " > $error_msg"
     log_error "==================================================================="
-    log_error "\n > Exiting...\n"
+    log_warning "\n > Exiting...\n"
     exit 1
 }
 
