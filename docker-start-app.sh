@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# import other libraries
+source logging_utils.sh
+
 # ----------------------------------------------------------------------
 # Script definitions
 # ----------------------------------------------------------------------
@@ -18,11 +21,12 @@ GIT_SSH_FILE=""
 # usage help use
 # ----------------------------------------------------------------------
 usage() {
-    echo -e "\n--- [DOCKER]: docker-start-app.sh ---\n"
+    log_info "\n--- [DOCKER]: docker-start-app.sh ---\n"
     echo -e "Usage:\n"
     echo -e "  $0 [ -d ]   (use default repo path: '$DEFAULT_REPO_PATH')"
     echo -e "  $0 [ -i ]   (use default id_rsa: '$DEFAULT_SSH_FILE')"
-    echo -e "  $0          (run normal. Type the repo path to be used.)\n"
+    echo -e "  $0          (run normal. Type the repo path and ssh to be used.)"
+    echo -e ""
     exit 0
 }
 
@@ -30,12 +34,12 @@ usage() {
 # ----------------------------------------------------------------------
 handle_error() {
     error_msg=$1
-    echo -e ""
-    echo -e "\e[91m===================================================================\033[0m"
-    echo -e "\e[91m > [DOCKER]: ERROR:\033[0m"
-    echo -e "\e[91m > $error_msg\033[0m"
-    echo -e "\e[91m===================================================================\033[0m"
-    echo -e "\n\e[93m > Exiting...\n\033[0m"
+    log_error ""
+    log_error "==================================================================="
+    log_error " > [DOCKER]: ERROR:"
+    log_error " > $error_msg"
+    log_error "==================================================================="
+    log_error "\n > Exiting...\n"
     exit 1
 }
 
@@ -75,7 +79,7 @@ else
     else
         echo -e ""
         echo -e " > [DOCKER]: Valid Repo Path Value -> '$input_repo_path'"
-        echo -e "\e[92m > [DOCKER]: [OK]\033[0m\n"
+        log_info " > [DOCKER]: [OK]\n"
     fi
     REPO_PATH_TO_DEPLOY="$input_repo_path"
 fi
@@ -95,7 +99,7 @@ else
     else
         echo -e ""
         echo -e " > [DOCKER]: Valid SSH id_rsa Value -> '$input_ssh_path'"
-        echo -e "\e[92m > [DOCKER]: [OK]\033[0m\n"
+        log_info " > [DOCKER]: [OK]\n"
     fi
     GIT_SSH_FILE="$input_ssh_path"
 fi
@@ -107,7 +111,7 @@ this_root_ssh_file="$current_working_dir/$DEFAULT_SSH_FILE_ID"
 
 # validate that ssh path exists
 # ----------------------------------------------------------------------
-echo -e " > [DOCKER]: Validate SSH $DEFAULT_SSH_FILE_ID is located in root..."
+log_debug " > [DOCKER]: Validate SSH $DEFAULT_SSH_FILE_ID is located in root..."
 echo -e " > SSH File -> '$this_root_ssh_file'"
 if [ ! -f "$this_root_ssh_file" ] ; then
 
@@ -119,21 +123,21 @@ if [ ! -f "$this_root_ssh_file" ] ; then
 
     # copy ssh key to root in order to be used by docker
     cp "$GIT_SSH_FILE" "$current_working_dir"
-    echo -e " > [DOCKER]: Successfully Copied [OK]"
+    log_info " > [DOCKER]: Successfully Copied [OK]"
 else
     echo -e " > [DOCKER]: SSH $DEFAULT_SSH_FILE_ID already located in root."
-    echo -e "\e[92m > [DOCKER]: Nothing to do! [OK]\033[0m\n"
+    log_info " > [DOCKER]: Nothing to do! [OK]\n"
 fi
 echo -e " ------------------------------------------------------------"
 
 # set the repo path variable use at docker-compose file.
 export REPO_TO_DEPLOY="$REPO_PATH_TO_DEPLOY"
 
-echo -e " > [DOCKER]: Executing docker-compose Process...\n"
+log_debug " > [DOCKER]: Executing docker-compose Process...\n"
 
 echo -e " > [DOCKER]: Stop all running containers..."
 docker-compose -f docker-compose.yml down
-echo -e "\e[92m > [DOCKER]: Containers Stopped [OK]\033[0m\n"
+log_info " > [DOCKER]: Containers Stopped [OK]\n"
 echo -e " ------------------------------------------------------------"
 
 echo -e " > [DOCKER]: Starting containers..."
@@ -145,9 +149,9 @@ if [ $docker_exit_status -ne 0 ]; then
 fi
 
 echo -e "\n"
-echo -e "\e[92m===================================================================\033[0m"
-echo -e "\e[92m > [DOCKER]: Docker App Executed! [OK]\033[0m"
-echo -e ""
-echo -e "\e[92m > [Executed in Background...]\033[0m"
-echo -e "\e[92m===================================================================\033[0m"
+log_info "==================================================================="
+log_info " > [DOCKER]: Docker App Executed! [OK]"
+log_info ""
+log_info " > [Executed in Background...]"
+log_info "==================================================================="
 echo -e "\n"
