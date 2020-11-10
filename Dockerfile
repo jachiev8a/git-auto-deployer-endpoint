@@ -18,7 +18,7 @@ RUN chmod 700 /root/.ssh/id_rsa
 # add ssh credentials to pull repo in git
 # ----------------------------------------------------------------------
 ADD ssh_config /root/.ssh/config
-RUN chmod 700 /root/.ssh/ssh_config
+RUN chmod 700 /root/.ssh/config
 
 EXPOSE 5000
 
