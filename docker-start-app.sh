@@ -82,7 +82,7 @@ fi
 
 # Validate ssh argument
 # ----------------------------------------------------------------------
-if [ "USE_DEFAULT_SSH_FILE" = true ] ; then
+if [ "$USE_DEFAULT_SSH_FILE" = true ] ; then
     echo -e " > [DOCKER]: Using Default SSH id_rsa: '$DEFAULT_SSH_FILE'\n"
     GIT_SSH_FILE=$DEFAULT_SSH_FILE
 else
