@@ -61,8 +61,9 @@ else
     if [ ! -d "$input_repo_path" ] ; then
         handle_error "Given Repo Path does not exists! -> '$input_repo_path'"
     else
+        echo -e ""
         echo -e " > [DOCKER]: Valid Repo Path -> '$input_repo_path'"
-        echo -e " > [DOCKER]: [OK]"
+        echo -e " > [DOCKER]: [OK]\n"
     fi
     REPO_PATH_TO_DEPLOY="$input_repo_path"
 fi
