@@ -12,49 +12,105 @@ app = Flask(__name__)
 LOGGER = logging.getLogger('git-auto-deploy')
 LOGGER_CONFIGURED = False
 
+LOGGING_FORMAT_CONSOLE = '%(asctime)s | %(module)-24s |: [%(levelname)s] -> %(message)s'
+# LOGGING_FORMAT_FILE_1 = '%(asctime)s | %(filename)s-%(funcName)s() [ln:%(lineno)s] | : [%(levelname)s] -> %(message)s'
+LOGGING_FORMAT_FILE = '%(asctime)s | [%(levelname)s]: %(module)s.%(funcName)s() [ln:%(lineno)s] | > %(message)s'
 
-def configure_logger(global_logger, log_level):
-    # type: (logging.Logger, str) -> None
-    """Configures the main logger object.
-    log level is set for logging level.
+# this module file path references
+THIS_MODULE_ROOT_DIR = os.path.dirname(__file__)
+LOGS_OUTPUT_DIR = os.path.normpath(os.path.join(THIS_MODULE_ROOT_DIR, 'logs'))
 
-    :param global_logger: main logger instance
-    :param log_level:
-        logging level [ error > warning > info > debug > off ]
-    :return:
+# main logging levels used
+LOGGING_LEVELS = {
+    'off': logging.NOTSET,
+    'debug': logging.DEBUG,
+    'info': logging.INFO,
+    'warning': logging.WARNING,
+    'error': logging.ERROR,
+    'critical': logging.CRITICAL
+}
+
+def configure_logger(
+        logger_object,
+        log_level_console='warning',
+        log_level_file='debug',
+        log_file_name=None):
+    # type: (logging.Logger, str, str, str) -> None
+    """Setup the logger object previously instanced at the scripts.
+    Configures the logger level for console output and file handler.
+
+    usage:
+        my_logger = logging.getLogger(os.path.basename(__file__))
+        setup_logger(my_logger)
+
+    :param logger_object: logger object previously instanced.
+
+    :param log_level_console: logging level for the console output
+        options: [ error > warning > info > debug > off ]
+
+    :param log_level_file: logging level for the file output
+        options: [ error > warning > info > debug > off ]
+
+    :param log_file_name: name to be given to the generated log file.
     """
     global LOGGER_CONFIGURED
     if not LOGGER_CONFIGURED:
-        log_levels = {
-            'off': logging.NOTSET,
-            'debug': logging.DEBUG,
-            'info': logging.INFO,
-            'warning': logging.WARNING,
-            'error': logging.ERROR,
-            'critical': logging.CRITICAL
-        }
-        if log_level not in log_levels.keys():
-            raise ValueError("Logging level not valid: '{}'".format(log_level))
-        else:
-            log_level = log_levels[log_level]
-        global_logger.setLevel(logging.DEBUG)
+        # main attributes for the class
+        # -------------------------------------------------
+        logger_object.setLevel(logging.DEBUG)
+        logger_level_console = None
+        logger_level_file = None
 
-        # create file handler which logs even debug messages
-        if os.path.exists("logs/"):
-            file_handler = logging.FileHandler('logs/python__git-auto-deployer.log')
+        # default name given (logger_name.log)
+        logger_file_name = logger_object.name + '.log'  # default value
+
+        # log file custom configuration (if given)
+        if log_file_name is not None:
+            logger_file_name = log_file_name + '.log'
+
+        logger_file_path = os.path.normpath(os.path.join(LOGS_OUTPUT_DIR, logger_file_name))
+
+        # validate both logging levels (Console & File)
+        # -------------------------------------------------
+
+        # Console
+        # ------------
+        if log_level_console not in LOGGING_LEVELS.keys():
+            raise ValueError("Console Logging level not valid: '{}'".format(log_level_console))
         else:
-            file_handler = logging.FileHandler('python__git-auto-deployer.log')
-        file_handler.setLevel(log_level)
-        # create console handler with a higher log level
+            logger_level_console = LOGGING_LEVELS[log_level_console]
+
+        # File
+        # ------------
+        if log_level_file not in LOGGING_LEVELS.keys():
+            raise ValueError("Console Logging level not valid: '{}'".format(log_level_file))
+        else:
+            logger_level_file = LOGGING_LEVELS[log_level_file]
+
+        # generate logs directory (if it does not exist)
+        if not os.path.exists(LOGS_OUTPUT_DIR):
+            os.mkdir(LOGS_OUTPUT_DIR)
+
+        # create formatter
+        # -------------------------------------------------
+        log_format_console = logging.Formatter(LOGGING_FORMAT_CONSOLE)
+        log_format_file = logging.Formatter(LOGGING_FORMAT_FILE)
+
+        # create handler for console output
+        # -------------------------------------------------
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(log_level)
-        # create formatter and add it to the handlers
-        formatter = logging.Formatter('%(asctime)s :%(name)-16s: [%(levelname)s] -> %(message)s')
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
-        # add the handlers to the logger
-        global_logger.addHandler(file_handler)
-        global_logger.addHandler(console_handler)
+        console_handler.setFormatter(log_format_console)
+        console_handler.setLevel(logger_level_console)
+        logger_object.addHandler(console_handler)
+
+        # create handler for file output
+        # -------------------------------------------------
+        file_handler = logging.FileHandler(logger_file_path)
+        file_handler.setFormatter(log_format_file)
+        file_handler.setLevel(logger_level_file)
+        logger_object.addHandler(file_handler)
+
+        logger_object.debug("['{}'] Logger Started [OK]".format(logger_object.name))
         LOGGER_CONFIGURED = True
 
 
