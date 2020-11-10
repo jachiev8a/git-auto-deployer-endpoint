@@ -43,6 +43,13 @@ handle_error() {
     exit 1
 }
 
+# run script as root
+# ----------------------------------------------------------------------
+if [ "$EUID" -ne 0 ]
+  handle_error "Please run this script as 'root'"
+  exit
+fi
+
 # validate arguments parsing
 # ----------------------------------------------------------------------
 while getopts "hdi" option; do
