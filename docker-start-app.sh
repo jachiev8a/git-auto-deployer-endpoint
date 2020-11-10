@@ -51,18 +51,18 @@ fi
 # Validate repo path argument
 # ----------------------------------------------------------------------
 if [ "$USE_DEFAULT_REPO_PATH" = true ] ; then
-    echo -e " > [DOCKER]: Using Default repo path: '$DEFAULT_REPO_PATH'"
+    echo -e " > [DOCKER]: Using Default repo path: '$DEFAULT_REPO_PATH'\n"
     REPO_PATH_TO_DEPLOY=$DEFAULT_REPO_PATH
 else
     echo -e " > [DOCKER]: Setting up Repo Path:\n"
-    read -p " > Enter the Repo Path Value: " input_repo_path
+    read -r -p " > Enter the Repo Path Value: " input_repo_path
 
     # validate that repo path exists
     if [ ! -d "$input_repo_path" ] ; then
         handle_error "Given Repo Path does not exists! -> '$input_repo_path'"
     else
         echo -e ""
-        echo -e " > [DOCKER]: Valid Repo Path -> '$input_repo_path'"
+        echo -e " > [DOCKER]: Valid Repo Path Value -> '$input_repo_path'"
         echo -e " > [DOCKER]: [OK]\n"
     fi
     REPO_PATH_TO_DEPLOY="$input_repo_path"
