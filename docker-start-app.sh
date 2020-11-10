@@ -90,7 +90,7 @@ else
     read -r -p " > Enter the SSH id_rsa Path Value: " input_ssh_path
 
     # validate that ssh path exists
-    if [ ! -d "$input_ssh_path" ] ; then
+    if [ ! -f "$input_ssh_path" ] ; then
         handle_error "Given SSH id_rsa Path does not exists! -> '$input_ssh_path'"
     else
         echo -e ""
