@@ -14,3 +14,11 @@ services:
             #- /home/ocu02017/git/jira-groovy-scripts:/app/sync-repo
             - ${REPO_TO_DEPLOY}:/volume/repo
             - ./logs:/app/logs
+
+networks:
+    default:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet:  192.168.123.0/24
